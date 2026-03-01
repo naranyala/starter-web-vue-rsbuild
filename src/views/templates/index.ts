@@ -1,0 +1,2 @@
+// Views Templates Index
+export {};

@@ -1,0 +1,4 @@
+# Qwen Code specific ignores
+.qwen/
+!.qwen/settings.json
+!.qwen/tasks/

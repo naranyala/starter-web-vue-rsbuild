@@ -1,0 +1,14 @@
+# Bun test configuration
+# See: https://bun.sh/docs/cli/test
+
+[test]
+# Test file patterns - look in tests/ directory
+root = "./tests"
+pattern = "**/*.test.ts"
+
+# Coverage
+coverage = true
+coverageDir = "./coverage"
+
+# Timeout (ms)
+timeout = 5000

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Error Handling Demo</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    h1 {
+      color: #1e293b;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 10px;
+    }
+    
+    .description {
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+    
+    .buttons-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .error-btn {
+      padding: 15px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+    
+    .js-error {
+      background-color: #fee2e2;
+      color: #dc2626;
+      border-left: 4px solid #dc2626;
+    }
+    
+    .js-error:hover {
+      background-color: #fecaca;
+      transform: translateY(-2px);
+    }
+    
+    .api-error {
+      background-color: #fef3c7;
+      color: #d97706;
+      border-left: 4px solid #f59e0b;
+    }
+    
+    .api-error:hover {
+      background-color: #fde68a;
+      transform: translateY(-2px);
+    }
+    
+    .network-error {
+      background-color: #dbeafe;
+      color: #2563eb;
+      border-left: 4px solid #3b82f6;
+    }
+    
+    .network-error:hover {
+      background-color: #bfdbfe;
+      transform: translateY(-2px);
+    }
+    
+    .promise-error {
+      background-color: #e9d5ff;
+      color: #7c3aed;
+      border-left: 4px solid #8b5cf6;
+    }
+    
+    .promise-error:hover {
+      background-color: #d8b4fe;
+      transform: translateY(-2px);
+    }
+    
+    .btn-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .btn-icon {
+      font-size: 1.5rem;
+    }
+    
+    .instructions {
+      margin-top: 30px;
+      padding: 15px;
+      background-color: #f1f5f9;
+      border-radius: 8px;
+      color: #475569;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🚨 Global Error Handling System</h1>
+    
+    <p class="description">
+      This demo showcases the global error handling system with modal popups and backdrop. 
+      Click the buttons below to trigger different types of errors and see how the system handles them.
+    </p>
+    
+    <div class="buttons-container">
+      <button class="error-btn js-error" onclick="triggerJSError()">
+        <div class="btn-content">
+          <span>❌ Trigger JavaScript Error</span>
+          <span class="btn-icon">⚠️</span>
+        </div>
+        <p style="margin: 8px 0 0 0; font-size: 0.9rem; opacity: 0.8;">Triggers a standard JavaScript error that will be caught by the global error handler</p>
+      </button>
+      
+      <button class="error-btn api-error" onclick="triggerAPIError()">
+        <div class="btn-content">
+          <span>🌐 Simulate API Error</span>
+          <span class="btn-icon">📡</span>
+        </div>
+        <p style="margin: 8px 0 0 0; font-size: 0.9rem; opacity: 0.8;">Simulates an API request failure with detailed error information</p>
+      </button>
+      
+      <button class="error-btn network-error" onclick="triggerNetworkError()">
+        <div class="btn-content">
+          <span>🔌 Simulate Network Error</span>
+          <span class="btn-icon">📶</span>
+        </div>
+        <p style="margin: 8px 0 0 0; font-size: 0.9rem; opacity: 0.8;">Simulates a network connectivity issue</p>
+      </button>
+      
+      <button class="error-btn promise-error" onclick="triggerPromiseError()">
+        <div class="btn-content">
+          <span>🔄 Trigger Promise Rejection</span>
+          <span class="btn-icon">⚡</span>
+        </div>
+        <p style="margin: 8px 0 0 0; font-size: 0.9rem; opacity: 0.8;">Triggers an unhandled promise rejection</p>
+      </button>
+    </div>
+    
+    <div class="instructions">
+      <h3>How it works:</h3>
+      <ul>
+        <li>All errors are caught by the global error handler</li>
+        <li>Error details are displayed in a modal with backdrop</li>
+        <li>Detailed stack traces are available for debugging</li>
+        <li>Errors are logged to the console with additional context</li>
+        <li>Custom error metadata is preserved and displayed</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    // Global error handler for the demo
+    window.addEventListener('error', function(event) {
+      showErrorModal({
+        title: 'JavaScript Error',
+        message: event.error.message || 'An unexpected error occurred',
+        stack: event.error.stack,
+        component: 'Global Error Handler',
+        meta: {
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+          url: window.location.href
+        }
+      });
+    });
+
+    window.addEventListener('unhandledrejection', function(event) {
+      showErrorModal({
+        title: 'Unhandled Promise Rejection',
+        message: event.reason.message || 'A promise rejection was not handled',
+        stack: event.reason.stack,
+        component: 'Promise Handler',
+        meta: {
+          type: 'Promise Rejection',
+          promise: event.promise
+        }
+      });
+    });
+
+    function triggerJSError() {
+      console.log('Triggering JavaScript error...');
+      throw new Error('This is a demonstration JavaScript error! Timestamp: ' + new Date().toISOString());
+    }
+
+    function triggerAPIError() {
+      console.log('Simulating API error...');
+      // Create a mock error response
+      const error = new Error('API request failed: Network timeout');
+      error.type = 'api';
+      error.statusCode = 500;
+      error.url = 'https://api.example.com/users';
+      throw error;
+    }
+
+    function triggerNetworkError() {
+      console.log('Simulating network error...');
+      const error = new Error('Network request failed: Connection timeout');
+      error.type = 'network';
+      error.code = 'NETWORK_TIMEOUT';
+      throw error;
+    }
+
+    function triggerPromiseError() {
+      console.log('Triggering promise rejection...');
+      Promise.reject(new Error('This is a demonstration promise rejection!'));
+    }
+
+    function showErrorModal(errorData) {
+      // Remove any existing modal
+      const existingModal = document.querySelector('.error-modal-overlay');
+      if (existingModal) {
+        existingModal.remove();
+      }
+
+      // Create backdrop
+      const backdrop = document.createElement('div');
+      backdrop.className = 'error-modal-overlay';
+      backdrop.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        z-index: 10000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      `;
+
+      // Create modal content
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow: hidden;
+        z-index: 10001;
+        animation: modalSlideIn 0.3s ease-out;
+      `;
+
+      // Modal content
+      modal.innerHTML = `
+        <div style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 20px 24px;
+          border-bottom: 1px solid #e5e7eb;
+          background: linear-gradient(135deg, #fee2e2, #fecaca);
+        ">
+          <div style="
+            display: flex;
+            align-items: center;
+            gap: 10px;
+          ">
+            <span style="font-size: 1.5rem;">⚠️</span>
+            <h2 style="
+              margin: 0;
+              font-size: 1.25rem;
+              font-weight: 600;
+              color: #dc2626;
+            ">${errorData.title}</h2>
+          </div>
+          <button id="close-error-modal" style="
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            color: #dc2626;
+            transition: background-color 0.2s;
+          ">✕</button>
+        </div>
+        
+        <div style="
+          padding: 24px;
+          overflow-y: auto;
+          max-height: 50vh;
+        ">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <p style="
+              font-size: 1.1rem;
+              color: #374151;
+              line-height: 1.6;
+              margin: 0;
+            ">${escapeHtml(errorData.message)}</p>
+            
+            ${errorData.stack ? `
+            <details style="
+              background: #f9fafb;
+              border: 1px solid #e5e7eb;
+              border-radius: 6px;
+              padding: 12px;
+              margin-top: 12px;
+            ">
+              <summary style="
+                cursor: pointer;
+                font-weight: 600;
+                color: #4b5563;
+                padding: 8px;
+                outline: none;
+              ">Error Details</summary>
+              <pre style="
+                background: #1f2937;
+                color: #f9fafb;
+                padding: 12px;
+                border-radius: 4px;
+                font-size: 0.8rem;
+                margin-top: 8px;
+                overflow-x: auto;
+                max-height: 200px;
+                white-space: pre-wrap;
+              ">${escapeHtml(errorData.stack)}</pre>
+            </details>
+            ` : ''}
+            
+            <div style="
+              background: #f3f4f6;
+              border-radius: 6px;
+              padding: 12px;
+              margin-top: 12px;
+            ">
+              <p style="margin: 6px 0; font-size: 0.9rem; color: #4b5563;">
+                <strong style="color: #1f2937;">Component:</strong> ${escapeHtml(errorData.component || 'Unknown')}
+              </p>
+              <p style="margin: 6px 0; font-size: 0.9rem; color: #4b5563;">
+                <strong style="color: #1f2937;">Time:</strong> ${new Date().toLocaleString()}
+              </p>
+              <p style="margin: 6px 0; font-size: 0.9rem; color: #4b5563;">
+                <strong style="color: #1f2937;">URL:</strong> ${escapeHtml(window.location.href)}
+              </p>
+              ${errorData.meta ? Object.entries(errorData.meta).map(([key, value]) => 
+                `<p style="margin: 6px 0; font-size: 0.9rem; color: #4b5563;">
+                  <strong style="color: #1f2937;">${escapeHtml(key)}:</strong> ${escapeHtml(String(value))}
+                </p>`
+              ).join('') : ''}
+            </div>
+          </div>
+        </div>
+        
+        <div style="
+          display: flex;
+          justify-content: flex-end;
+          gap: 12px;
+          padding: 20px 24px;
+          border-top: 1px solid #e5e7eb;
+          background: #f9fafb;
+        ">
+          <button id="dismiss-error-modal" style="
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #6b7280;
+            color: white;
+          ">OK</button>
+        </div>
+      `;
+
+      backdrop.appendChild(modal);
+      document.body.appendChild(backdrop);
+
+      // Add event listeners
+      backdrop.querySelector('#close-error-modal').addEventListener('click', () => backdrop.remove());
+      backdrop.querySelector('#dismiss-error-modal').addEventListener('click', () => backdrop.remove());
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+          backdrop.remove();
+        }
+      });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: scale(0.7);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

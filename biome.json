@@ -1,0 +1,152 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true,
+    "defaultBranch": "main"
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "lineEnding": "lf",
+    "attributePosition": "auto"
+  },
+  "javascript": {
+    "formatter": {
+      "enabled": true,
+      "quoteStyle": "single",
+      "jsxQuoteStyle": "double",
+      "trailingCommas": "es5",
+      "semicolons": "always",
+      "arrowParentheses": "always",
+      "bracketSpacing": true,
+      "bracketSameLine": false,
+      "quoteProperties": "asNeeded"
+    },
+    "globals": ["defineProps", "defineEmits", "defineExpose", "withDefaults"]
+  },
+  "json": {
+    "formatter": {
+      "enabled": true,
+      "indentStyle": "space",
+      "indentWidth": 2,
+      "lineWidth": 100,
+      "lineEnding": "lf"
+    },
+    "parser": {
+      "allowComments": false,
+      "allowTrailingCommas": false
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "complexity": {
+        "recommended": true,
+        "noForEach": "off",
+        "noUselessFragments": "warn"
+      },
+      "correctness": {
+        "recommended": true,
+        "noUnusedImports": "error",
+        "noUnusedVariables": "warn",
+        "useHookAtTopLevel": "warn",
+        "noConstantMathMinMaxClamp": "error"
+      },
+      "performance": {
+        "recommended": true,
+        "noDelete": "off"
+      },
+      "security": {
+        "recommended": true
+      },
+      "style": {
+        "recommended": true,
+        "noNonNullAssertion": "warn",
+        "useConst": "error",
+        "useImportType": "warn",
+        "noParameterAssign": "warn"
+      },
+      "suspicious": {
+        "recommended": true,
+        "noConsole": "off",
+        "noExplicitAny": "warn",
+        "noDoubleEquals": "error",
+        "noDuplicateObjectKeys": "error",
+        "noEmptyInterface": "warn",
+        "noArrayIndexKey": "warn",
+        "noAssignInExpressions": "error",
+        "noConfusingVoidType": "warn"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["*.vue"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedImports": "warn"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/tests/**/*.ts", "**/*.test.ts", "**/*.spec.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noExplicitAny": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
+          },
+          "correctness": {
+            "noUnusedVariables": "off"
+          }
+        }
+      }
+    }
+  ],
+  "files": {
+    "includes": [
+      "src/**/*.js",
+      "src/**/*.ts",
+      "src/**/*.vue",
+      "tests/**/*.ts",
+      "*.config.ts",
+      "*.config.js",
+      "!!**/node_modules",
+      "!!**/dist",
+      "!!**/coverage",
+      "!!**/*.min.js",
+      "!!**/*.min.css",
+      "!!**/.qwen",
+      "!!**/reports"
+    ],
+    "ignoreUnknown": true
+  },
+  "css": {
+    "formatter": {
+      "enabled": true,
+      "indentStyle": "space",
+      "indentWidth": 2,
+      "quoteStyle": "single"
+    },
+    "linter": {
+      "enabled": true
+    }
+  }
+}
